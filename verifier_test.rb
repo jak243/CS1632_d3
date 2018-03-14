@@ -33,7 +33,7 @@ class VerifierTest < Minitest::Test
 
   def test_compute_block_transaction_valid
     transaction_string = "2>3(11):1>2(1):SYSTEM>1(100)"
-    assert Methods.compute_block_transaction(transaction_string, @addresses)
+    assert Methods.compute_block_transaction(transaction_string, @addresses)[0]
     assert_equal @ad1.balance, 109
     assert_equal @ad2.balance, 0
     assert_equal @ad3.balance, 21
@@ -41,13 +41,15 @@ class VerifierTest < Minitest::Test
 
   def test_compute_block_transaction_valid_new_user
     transaction_string = "SYSTEM>4(100)"
-    assert Methods.compute_block_transaction(transaction_string, @addresses)
+    assert Methods.compute_block_transaction(transaction_string, @addresses)[0]
     assert_equal @addresses[3].balance, 100
   end
 
   def test_compute_block_transaction_invalid
     transaction_string = "2>3(11)"
-    assert !Methods.compute_block_transaction(transaction_string, @addresses)
+    result = Methods.compute_block_transaction(transaction_string, @addresses)
+    assert !result[0]
+    assert_equal result[1],@ad2
   end
 
   def test_find_address_new_address

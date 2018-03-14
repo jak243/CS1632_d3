@@ -2,4 +2,4 @@ source "https://rubygems.org"
 
 gem "minitest"
 gem 'flamegraph'
-gem 'stackprof'
+gem 'fast_stack'
