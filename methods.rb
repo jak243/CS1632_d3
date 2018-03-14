@@ -1,3 +1,5 @@
+require_relative "address"
+
 class Methods
   def self.hash(lineString)
     values = lineString.unpack('U*')
@@ -27,10 +29,11 @@ class Methods
       parse_transaction_line(transaction_line).each do |transaction|
         compute_transaction(parse_transaction(transaction), addresses)
       end
-      if(invalid_balances?(addresses))
-        return false
+      invalid = invalid_balances?(addresses)
+      if(invalid[0])
+        return false, invalid[1]
       end
-      return true
+      return true, nil
   end
 
   def self.find_address(name, addresses)
@@ -50,10 +53,10 @@ class Methods
   def self.invalid_balances?(addresses)
     addresses.each do |address|
       if address.debt?
-        return true
+        return true, address
       end
     end
-    return false
+    return false, nil
   end
 
   def self.compute_transaction(transaction_array, addresses)
